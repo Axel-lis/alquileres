@@ -19,6 +19,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('/propiedades', 'propiedades.index')->name('propiedades.index');
     Route::view('/contratos', 'contratos.index')->name('contratos.index');
     Route::view('/pagos', 'pagos.index')->name('pagos.index');
+    Route::view('/inquilinos', 'inquilinos.index')->name('inquilinos.index');
 
     // Perfil
     Route::prefix('profile')->group(function () {
