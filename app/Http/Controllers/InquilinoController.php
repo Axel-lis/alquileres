@@ -12,8 +12,10 @@ class InquilinoController extends Controller
      */
     public function index()
     {
-        //
+        $inquilinos = Inquilino::all();
+        return view('inquilinos.index', compact('inquilinos'));
     }
+
 
     /**
      * Show the form for creating a new resource.

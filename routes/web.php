@@ -13,14 +13,20 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/home', function() {
+    return view('dashboard');
+})->name('home')->middleware('auth');
 
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::resource('inquilinos', InquilinoController::class)->middleware('auth');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/propiedades', function() { return "Propiedades"; })->name('propiedades.index')->middleware('auth');
+Route::get('/contratos', function() { return "Contratos"; })->name('contratos.index')->middleware('auth');
+Route::get('/pagos', function() { return "Pagos"; })->name('pagos.index')->middleware('auth');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
