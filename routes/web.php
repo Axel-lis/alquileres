@@ -1,37 +1,32 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\InquilinoController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-Route::get('/home', function() {
-    return view('dashboard');
-})->name('home')->middleware('auth');
+// Ruta pública
+Route::get('/', fn() => view('welcome'));
 
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::resource('inquilinos', InquilinoController::class)->middleware('auth');
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/propiedades', function() { return "Propiedades"; })->name('propiedades.index')->middleware('auth');
-Route::get('/contratos', function() { return "Contratos"; })->name('contratos.index')->middleware('auth');
-Route::get('/pagos', function() { return "Pagos"; })->name('pagos.index')->middleware('auth');
+// Dashboard (autenticado)
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::view('/dashboard', 'dashboard')->name('dashboard');
+    Route::view('/home', 'dashboard')->name('home'); // opcional, si querés alias
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // CRUD Inquilinos
+    Route::resource('inquilinos', InquilinoController::class);
+
+    // Secciones placeholder
+    Route::view('/propiedades', 'propiedades.index')->name('propiedades.index');
+    Route::view('/contratos', 'contratos.index')->name('contratos.index');
+    Route::view('/pagos', 'pagos.index')->name('pagos.index');
+
+    // Perfil
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
 });
 
+// Autenticación
 require __DIR__.'/auth.php';
